@@ -9,4 +9,32 @@
 
 ### 描述
 
-...
+1. 8:30-8:59 之间执行随机时间生成程序
+2. 打卡程序每5秒执行一次
+    * 判断打卡时间是否有效
+        * 如果有效则打卡
+        * 如果无效则不做动作
+3. 当8:59分之前没有打卡，则无论如何都执行一次打卡程序进行打卡
+
+- 判断是否打卡：
+    - 判断目录中是否有当天的截图
+
+
+### 安装
+* 编辑src/autoclocked.xml
+    * id, name, description都是显示在windows服务中的信息
+    * env APP_HOME 配置的是项目所在目录
+    * executabledirectory 配置的是python.exe 的路径
+```Shell
+<configuration>
+    <id>AutoClocked</id>
+    <name>AutoClocked</name>
+    <description>this app for auto clocked on Career Web service</description>
+    <env name="APP_HOME" value="E:\Programs\Miniconda"/>
+    <workingdirectory>%APP_HOME%</workingdirectory>
+    <executable>%APP_HOME%\python.exe</executable>
+    <arguments>D:\AutoClocked\src\autoClocked.py</arguments>
+</configuration> 
+```
+* install: winsw.exe install src\autoclocked.xml
+* uninstall: winsw.exe uninstall src\autoclocked.xml

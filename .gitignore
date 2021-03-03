@@ -1,3 +1,6 @@
 .vscode/
 config.py
 */__pycache__
+*/autoclocked.err.log
+*/autoclocked.out.log
+*/autoclocked.wrapper.log

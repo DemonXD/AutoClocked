@@ -1,0 +1,18 @@
+<configuration>
+    <id>AutoClocked</id>
+    <name>AutoClocked</name>
+    <description>this app for auto clocked on Career Web service</description>
+    <env name="APP_HOME" value="E:\Programs\Miniconda"/>
+    <workingdirectory>%APP_HOME%</workingdirectory>
+    <executable>%APP_HOME%\python.exe</executable>
+    <arguments>D:\AutoClocked\src\autoClocked.py</arguments>
+</configuration> 
+<!-- <service>
+<id>SmartTestBackend</id>
+<name>SmartTestBackend</name>
+<description>this app for SmartTest application backend service</description>
+<env name="PYTHON_PATH" value="C:\Users\Miles\.conda\envs\smarttest" />
+<workingdirectory>C:\Users\Miles\Desktop\Amax_Project\smarttest\smt_backend</workingdirectory>
+<executable>%PYTHON_PATH%\python </executable>
+<arguments>main.py</arguments>
+</service>  -->
