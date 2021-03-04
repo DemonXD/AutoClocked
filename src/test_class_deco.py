@@ -17,8 +17,9 @@ def deco2(func):
     print("run deco 2 enter__")
     @functools.wraps(func)
     def wrapped(*args, **kwargs):
-        print("run deco2 wrapped")
-        return func(*args, **kwargs)
+        # print("run deco2 wrapped")
+        # return func(*args, **kwargs)
+        pass
     print("run deco 2 exit__")
     return wrapped
 
@@ -27,7 +28,7 @@ class Sample:
     def __init__(self):
         pass
 
-    @deco2
+    @deco2 # 这里不返回func，则整个func就不会执行
     @deco
     def say(self, mount: int) -> None:
         print("haha"+str(mount))

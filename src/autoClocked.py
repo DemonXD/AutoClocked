@@ -28,6 +28,8 @@ def create_logger(path):
     Creates a logging object and returns it
     """
     logger = logging.getLogger("AutoClocked_logger")
+
+    # logger.setLevel(logging.DEBUG)
     # logger.setLevel(logging.INFO)
     logger.setLevel(logging.WARN)
  
@@ -47,14 +49,21 @@ def check_can_clock(func):
     """ check the clock time is suitable or not
         修饰类方法的时候，第一个参数肯定为self，即类的实例
     Args:
-        func ([type]): [description]
+        func ([type]):
+        Desc.        : 1. 生成打卡时间
+                       2. 判断当前时间是否大于打卡时间且是在同一天
+                            1. 是，则继续执行打卡程序
+                            2. 否，将打卡时间置None，goto start
     """
     @functools.wraps(func)
     def wrapped(*args, **kwargs):
         if isinstance(args[0], Clocked):
-            if datetime.datetime.now() > args[0].clocked_date:
-                args[0].logger.info(f"满足设定时间，执行函数, 设定时间：{args[0].clocked_date}")
+            args[0].generate_clocked_time()
+            if (datetime.datetime.now() > args[0].clocked_date) and \
+                (datetime.date.today().day - args[0].clocked_date.day == 0):
+                args[0].logger.info(f"满足设定时间，执行函数, 当前时间：{datetime.datetime.now()} 设定时间：{args[0].clocked_date}")
                 return func(*args, **kwargs)
+            args[0].clocked_date = None
             args[0].logger.info(f"不满足设定时间，执行函数， 设定时间：{args[0].clocked_date}")
     return wrapped
 
@@ -76,11 +85,20 @@ def check_is_clocked(func):
     
 
 class Clocked:
-    clocked_url = r"url/to/your/website"
+    clocked_url = r"url/to/your/websites"
     chrome_driverpath = "D:\\AutoClocked\\chromedriver_win32\\chromedriver.exe"
     screenshot_daily_clocked_path = "E:\\Clocked_Screenshot"
     clocked_date = None
     logger = create_logger(screenshot_daily_clocked_path)
+
+    def __init__(self) -> None:
+        self.check_dirs()
+
+    def check_dirs(self):
+        if not os.path.exists(self.screenshot_daily_clocked_path):
+            os.makedirs(self.screenshot_daily_clocked_path)
+            self.logger.debug("目录不存在, 已创建")
+
 
     def init_chrome_options(self):
         options = ChromeOptions()
@@ -97,6 +115,7 @@ class Clocked:
         options.add_experimental_option("prefs", prefs)
         return options
 
+    @check_is_clocked
     def generate_clocked_time(self):
         if self.clocked_date is None:
             random_min = randint(1, 10)
@@ -107,9 +126,10 @@ class Clocked:
                 hour=8,
                 minute=40
             ) + datetime.timedelta(minutes=random_min)
+            self.logger.info(f"执行生成打卡时间: {self.clocked_date}")
 
-    @check_is_clocked # 这里后装载，先执行
-    @check_can_clock # 这里先装载，后执行
+    @check_is_clocked # 这里后装载，先执行, 功能：未打卡则继续向下执行
+    @check_can_clock # 这里先装载，后执行， 功能：看函数
     def clocked_(self):
         options = self.init_chrome_options()
         driver = webdriver.Chrome(executable_path=self.chrome_driverpath, options=options)
@@ -121,15 +141,14 @@ class Clocked:
             )
         driver.save_screenshot(clocked_file_name)
         driver.close()
+        self.logger.info(f"完成打卡，clocked_date: {self.clocked_date}")
         # 将 clocked_date 置None
         self.clocked_date = None
-        self.logger.info(f"完成打卡，clocked_date: {self.clocked_date}")
 
 
     def START(self):
         scheduler = BackgroundScheduler()
         # 周一到周五， 早上8:30 执行
-        scheduler.add_job(self.generate_clocked_time, 'interval', seconds=30)
         scheduler.add_job(self.clocked_, 'interval', seconds=30)
         # scheduler.add_job(self.clocked_, 'cron', day_of_week='mon-fri', hour=8, minute=30)
         scheduler.start()
