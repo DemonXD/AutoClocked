@@ -36,5 +36,24 @@
     <arguments>D:\AutoClocked\src\autoClocked.py</arguments>
 </configuration> 
 ```
+* 打开`src\autoClocked.py`配置`clocked_url`打卡地址
 * install: winsw.exe install src\autoclocked.xml
 * uninstall: winsw.exe uninstall src\autoclocked.xml
+
+### 流程描述
+一个流程循环：
+> 开始      ←
+>   ↓              ↑
+> 检查是否已打卡 -> 是
+>   ↓
+> 检查是否可以打卡 -> 否 -> goto start
+>   ↓ 是
+> 生成打卡时间
+>   ↓
+> 判断打卡时间是否有效 -> 否 -> goto start
+>   ↓
+> 打卡 
+>   ↓
+> 打卡时间置None
+>   ↓
+> 结束

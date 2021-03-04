@@ -85,7 +85,7 @@ def check_is_clocked(func):
     
 
 class Clocked:
-    clocked_url = r"url/to/your/websites"
+    clocked_url = r"http://ci24924:wozhidaowokeyi1@erp.careerintlinc.com/sitepages/aportal/default.aspx"
     chrome_driverpath = "D:\\AutoClocked\\chromedriver_win32\\chromedriver.exe"
     screenshot_daily_clocked_path = "E:\\Clocked_Screenshot"
     clocked_date = None
