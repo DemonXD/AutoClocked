@@ -9,8 +9,6 @@
 #                selenium
 #   过程描述    : 
 #################################################
-
-
 import datetime
 import os
 import time
@@ -85,18 +83,20 @@ def check_is_clocked(func):
     
 
 class Clocked:
-    clocked_url = r"http://ci24924:wozhidaowokeyi1@erp.careerintlinc.com/sitepages/aportal/default.aspx"
+    clocked_url = r"url/to/your/website"
     chrome_driverpath = "D:\\AutoClocked\\chromedriver_win32\\chromedriver.exe"
-    screenshot_daily_clocked_path = "E:\\Clocked_Screenshot"
+    screenshot_daily_clocked_path = os.path.join(os.path.expanduser("~"), "AutoClocked")
+    logdir = os.path.join(screenshot_daily_clocked_path, "Logs")
+    # screenshot_daily_clocked_path = "E:\\Clocked_Screenshot"
     clocked_date = None
-    logger = create_logger(screenshot_daily_clocked_path)
+    logger = create_logger(logdir)
 
     def __init__(self) -> None:
         self.check_dirs()
 
     def check_dirs(self):
-        if not os.path.exists(self.screenshot_daily_clocked_path):
-            os.makedirs(self.screenshot_daily_clocked_path)
+        if not os.path.exists(self.logdir):
+            os.makedirs(self.logdir)
             self.logger.debug("目录不存在, 已创建")
 
 
@@ -160,5 +160,4 @@ if __name__=="__main__":
         while True:
             time.sleep(1)
     except BaseException as e:
-        with open(f"{clocked.screenshot_daily_clocked_path}\\error.log", "a+") as f:
-            f.write(str(e) + "\n")
+        clocked.logger.error(str(e))
